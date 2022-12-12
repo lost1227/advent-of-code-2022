@@ -125,7 +125,9 @@ def plot_progress(curr, openset, seen):
         print(''.join(row))
 
 def path_to_goal(start, plot=False):
-    openset = [AStarNode(start, None, 0, estimate_cost(start))]
+    if not isinstance(start, list):
+        start = [start]
+    openset = [AStarNode(s, None, 0, estimate_cost(s)) for s in start]
     seen = set()
 
     path = []
@@ -178,18 +180,8 @@ for row in grid:
         if node.height == 0:
             starts.append(node)
 
-paths = []
-for start in starts:
-    path = path_to_goal(start)
-    if path is not None:
-        paths.append((start, path))
+path = path_to_goal(starts)
 
+plot_path(path)
 
-min_start = paths[0]
-for start, path in paths:
-    if len(path) < len(min_start[1]):
-        min_start = (start, path)
-
-plot_path(min_start[1])
-
-print("Part 2:", len(min_start[1]) - 1)
+print("Part 2:", len(path) - 1)
